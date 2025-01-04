@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const addBtn = document.getElementById('btn');
     const taskList = document.querySelector('.task-list');
     const form = document.querySelector('.controls-container');
+    const filters = document.querySelector('.filters');
 
     addBtn.addEventListener('click', (addTask) => {
         const taskText = textInput.value.trim();
@@ -57,6 +58,26 @@ document.addEventListener('DOMContentLoaded', () => {
                 taskElement.classList.remove('completed'); // Remove the class of completed
             }
         });
+
+        filters.classList.remove('hidden');
+
+        const filterTasks = (filter) => {
+            const tasks = document.querySelectorAll('.task'); // Get all tasks
+
+            tasks.forEach(task => {
+                if (filter === "all") {
+                    task.style.display = "flex"; // Show all tasks
+                } else if (filter === "completed") {
+                    task.style.display = task.classList.contains('completed') ? "flex" : "none";
+                } else if (filter === "pending") {
+                    task.style.display = !task.classList.contains('completed') ? "flex" : "none";
+                }
+            });
+        };
+
+        document.querySelector('.all').addEventListener('click', () => filterTasks("all"));
+        document.querySelector('.complete').addEventListener('click', () => filterTasks("completed"));
+        document.querySelector('.pending').addEventListener('click', () => filterTasks("pending"));
     });
 
     // Added form submission prevention
