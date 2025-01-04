@@ -37,10 +37,10 @@ document.addEventListener('DOMContentLoaded', () => {
         editButton.addEventListener('click', () => {
             const updatedText = prompt('Edit your task:', taskElement.firstChild.textContent);
             if (updatedText !== null) {
-                taskElement.firstChild.textContent = updatedText.trim(); // Update the task if input is valid
+                taskElement.childNodes[1].textContent = updatedText.trim(); // Update the task if input is valid
             }
         });
-    
+        
         deleteButton.addEventListener('click', () => {
             taskElement.remove(); // Remove the task element from the list
         });
