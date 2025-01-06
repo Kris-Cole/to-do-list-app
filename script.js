@@ -4,6 +4,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const taskList = document.querySelector('.task-list');
     const form = document.querySelector('.controls-container');
     const filters = document.querySelector('.filters');
+    const tasks = document.querySelector('.task');
 
     addBtn.addEventListener('click', (addTask) => {
         const taskText = textInput.value.trim();
@@ -78,11 +79,64 @@ document.addEventListener('DOMContentLoaded', () => {
         document.querySelector('.all').addEventListener('click', () => filterTasks("all"));
         document.querySelector('.complete').addEventListener('click', () => filterTasks("completed"));
         document.querySelector('.pending').addEventListener('click', () => filterTasks("pending"));
+        
+        // // Added form submission prevention
+        // form.addEventListener('submit', (e) => {
+        //     e.preventDefault();
+        //     addTask();
+        // });
     });
 
-    // Added form submission prevention
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        addTask();
-    });
 });
+
+let tasks = [];
+
+// Save tasks to local storage
+const saveTaskToLocalStorage = () => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+}
+
+// Load tasks from local storage
+const loadTasksFromLocalStorage = () => {
+    const storedTasks = localStorage.getItem('tasks');
+    if (storedTasks) {
+        tasks = JSON.parse(storedTasks);
+        tasks.forEach(task => renderTask(task));
+    }
+};
+
+// Render a task
+const renderTask = (task) => {
+    const taskList = document.getElementById('task-list');
+    const taskElement = document.createElement('li');
+    taskElement.className = 'task';
+    taskElement.dataset.id = task.id;
+    
+    taskElement.innerHTML = `
+        <input type="checkbox" class="complete-task" ${task.completed ? 'checked' : ''}>
+        <span>${task.text}</span>
+        <div>
+            <button class="edit">Edit</button>
+            <button class="delete">Delete</button>
+        </div>
+    `;
+
+    if (task.completed) taskElement.classList.add('completed');
+    taskList.appendChild(taskElement);
+};
+
+// Add task
+addBtn.addEventListener('click', () => {
+    const taskText = textInput.value.trim();
+
+    if (taskText) {
+        const newTask = { id: Date.now(), text, completed: false };
+        tasks.push(newTask);
+        renderTask(newTask);
+        saveTaskToLocalStorage();
+        textInput.value = ''; // Clear input field
+    }
+})
+
+// Initialize
+document.addEventListener('DOMContentLoaded', loadTasksFromLocalStorage);
